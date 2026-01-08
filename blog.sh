@@ -14,7 +14,7 @@ for file in posts/*.md; do
 done
 for file in others/*.md; do
     basename=$(basename "$file")
-    path=$basename
+    path=$(echo "$basename" | cut -d- -f4- | cut -d. -f1)
     title=$(head -1 "$file" | cut -d" " -f2-)
     echo $path
     mkdir "web/$path"
