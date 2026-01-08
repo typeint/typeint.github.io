@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>$if(ispost)$$title$$else$$who$$endif$</title>
+<link rel="stylesheet" href="/theme.css">
+</head>
+<body>
+<header>
+<h1>$if(ispost)$$title$$else$$who$$endif$</h1>
+<div class="nav">
+<a href="/">Home</a>
+<a href="/about/">About</a>
+</div>
+</header>
+<div class="container">
+<div class="post-content">
+$body$
+</div>
+$if(ispost)$
+<p class="post-meta">
+Published on $date$
+</p>
+<footer>
+<a href="../">Back to Blog Home</a>
+</footer>
+$endif$
+</div>
+</body>
+</html>
