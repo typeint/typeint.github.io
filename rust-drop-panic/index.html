@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rust Drop</title>
+<link rel="stylesheet" href="/theme.css">
+</head>
+<body>
+<header>
+<div class="nav">
+<a href="/">Home</a>
+<a href="/about/">About</a>
+</div>
+</header>
+<div class="container">
+<div class="post-content">
+<h1 id="rust-drop">Rust Drop</h1>
+<p>Hello! My first post here. For the first post I’ll write about
+something neat I learned today. The Rust destructors are always called
+even if your code panics. Like here the <code>drop()</code> still runs
+your code panics.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> S<span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> <span class="bu">Drop</span> <span class="cf">for</span> S <span class="op">{</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> drop(<span class="op">&amp;</span><span class="kw">mut</span> <span class="kw">self</span>) <span class="op">{</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="pp">println!</span>(<span class="st">&quot;dropped&quot;</span>)<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> _s <span class="op">=</span> S<span class="op">;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="pp">panic!</span>(<span class="st">&quot;boom&quot;</span>)<span class="op">;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>When you run this, you’ll see:</p>
+<pre><code>thread &#39;main&#39; panicked at src/main.rs:11:5:
+boom
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+dropped</code></pre>
+<p>The panic happens, but Rust still calls <code>drop()</code> on
+<code>_s</code> first. There is one important caveat. This only works
+during normal unwinding. If you compile with
+<code>panic = "abort"</code>, Rust skips unwinding and just terminates
+the process. I mean, don’t put this in your <code>Cargo.toml</code>:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode toml"><code class="sourceCode toml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[profile.dev]</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="dt">panic</span> <span class="op">=</span> <span class="st">&quot;abort&quot;</span></span></code></pre></div>
+<p>If you put that, you’ll see:</p>
+<pre><code>thread &#39;main&#39; panicked at src/main.rs:11:5:
+boom
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+zsh: abort      cargo run</code></pre>
+<p>So the <code>drop()</code> is skipped. That’s it. That wraps up my
+first post!</p>
+</div>
+<p class="post-meta">
+Published on 2026-01-07
+</p>
+<footer>
+<a href="../">Back to Home</a>
+</footer>
+</div>
+</body>
+</html>
