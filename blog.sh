@@ -11,6 +11,8 @@ for file in posts/*.md; do
     set -x; pandoc "$file" --template "template.html" -V "ispost=ispost" -V "title=$title" -V "who=Jim T" -V "date=$date" -o "web/$path/index.html"; set +x
     echo "$date - <a href=\"$path/\">$title</a>\n" >> index.md
     echo >> index.md
+    tac index.md > reverse.md
+    mv reverse.md index.md
 done
 for file in others/*.md; do
     basename=$(basename "$file")
